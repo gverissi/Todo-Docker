@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head"><title></title></head>
+
+<body id="body">
+
+<header th:replace="fragments/header :: header">header</header>
+
+
+<main id="main">
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/home}">Home</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/todo-lists}">Todo-Lists</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/todo-lists/{todoListNum}(todoListNum=${todoListDto.num})}" th:text="${todoListDto.title}">Todo-List</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/todo-lists/{todoListNum}/todos(todoListNum=${todoListDto.num})}">Todos</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${todoForm.label}">Todo</li>
+        </ol>
+    </nav>
+
+    <div th:replace="fragments/alert :: alert">alert</div>
+
+    <div th:if="${errorMessage}" class="d-flex justify-content-center alert-position">
+        <div class="text-center alert alert-danger" role="alert" th:text="${errorMessage}">
+        </div>
+    </div>
+
+    <div class="container">
+
+        <table class="table table-hover table-bordered">
+
+            <thead class="thead-dark">
+            <tr>
+                <th class="text-right">#</th>
+                <th>Label</th>
+                <th class="text-center">Done</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:object="${todoForm}">
+                <td class="text-right" th:text="*{num}"></td>
+                <td class="align-middle">
+                    <input form="update" class="input-table" th:type="text" th:field="*{label}" title="label"/>
+                    <small class="form-text text-muted" th:if="${#fields.hasErrors('label')}" th:errors="*{label}">errors</small>
+                </td>
+                <td class="align-middle">
+                    <input form="update" class="input-table" type="checkbox" th:field="*{done}" title="done"/>
+                </td>
+            </tr>
+            </tbody>
+
+        </table>
+
+        <form id="update" th:action="@{/todo-lists/{todoListNum}/todos/{todoNum}(todoListNum=${todoListDto.num}, todoNum=${todoForm.num})}" th:method="PUT">
+            <button type="submit" class="button">Update</button>
+        </form>
+
+        <form th:action="@{/todo-lists/{todoListNum}/todos/{todoNum}(todoListNum=${todoListDto.num}, todoNum=${todoForm.num})}" th:method="DELETE">
+            <button type="submit" class="button my-3">Delete</button>
+        </form>
+
+    </div>
+
+</main>
+
+
+<footer th:replace="fragments/footer :: footer">footer</footer>
+
+<div th:replace="fragments/script :: script">script</div>
+
+</body>
+</html>
